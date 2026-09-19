@@ -1029,10 +1029,59 @@ elif page == "Data Upload":
     uploaded_file = st.file_uploader(
         "Upload monitoring data",
         type=["csv"],
-        help="Upload a CSV file using the EarlySignal AI monitoring-data structure."
+        help="Upload a CSV file using the EarlySignal AI monitoring-data structure.",
+        key="monitoring_data_uploader"
+    )
+    
+    if uploaded_file is not None:
+        try:
+            st.session_state["uploaded_monitoring_data"] = pd.read_csv(
+                uploaded_file
+            )
+            st.session_state["uploaded_monitoring_filename"] = (
+                uploaded_file.name
+            )
+    
+        except Exception as error:
+            st.error(
+                "The uploaded CSV could not be read."
+            )
+            st.exception(error)
+            st.stop()
+    
+    uploaded_data = st.session_state.get(
+        "uploaded_monitoring_data"
     )
 
-    if uploaded_file is None:
+    if uploaded_data is not None:
+        uploaded_filename = st.session_state.get(
+            "uploaded_monitoring_filename",
+            "Uploaded dataset"
+        )
+    
+        clear_col1, clear_col2 = st.columns(
+            [4, 1]
+        )
+    
+        clear_col1.caption(
+            f"Active dataset: {uploaded_filename}"
+        )
+    
+        if clear_col2.button(
+            "Clear uploaded data",
+            key="clear_uploaded_monitoring_data"
+        ):
+            st.session_state.pop(
+                "uploaded_monitoring_data",
+                None
+            )
+            st.session_state.pop(
+                "uploaded_monitoring_filename",
+                None
+            )
+            st.rerun()
+
+    if uploaded_data is None:
 
         st.subheader("Expected Data Structure")
 
@@ -1066,18 +1115,6 @@ elif page == "Data Upload":
         # Read uploaded CSV
         # ----------------------------------------------------
 
-        try:
-
-            uploaded_data = pd.read_csv(uploaded_file)
-
-        except Exception as error:
-
-            st.error(
-                "The uploaded CSV could not be read."
-            )
-
-            st.exception(error)
-            st.stop()
 
         st.success(
             "File uploaded successfully."
