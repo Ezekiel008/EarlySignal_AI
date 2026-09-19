@@ -1,0 +1,24 @@
+# Jupyter
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+myenv/
+
+# Environment and secrets
+.env
+.env.*
+*.key
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Streamlit local configuration
+.streamlit/secrets.toml
