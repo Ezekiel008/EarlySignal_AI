@@ -189,6 +189,36 @@ def safe_text(value, fallback="Not available"):
         return fallback
 
     return value
+
+def persistent_selectbox(
+    container,
+    label,
+    options,
+    state_key
+):
+    widget_key = f"_{state_key}"
+
+    if state_key not in st.session_state:
+        st.session_state[state_key] = options[0]
+
+    if st.session_state[state_key] not in options:
+        st.session_state[state_key] = options[0]
+
+    st.session_state[widget_key] = (
+        st.session_state[state_key]
+    )
+
+    def save_value():
+        st.session_state[state_key] = (
+            st.session_state[widget_key]
+        )
+
+    return container.selectbox(
+        label,
+        options,
+        key=widget_key,
+        on_change=save_value
+    )
     
 # ------------------------------------------------------------
 # Sidebar navigation
@@ -1561,10 +1591,11 @@ elif page == "Performance Forecast":
         reverse=True
     )
 
-    forecast_month = fc1.selectbox(
+    forecast_month = persistent_selectbox(
+        fc1,
         "Reporting Month",
         ["All Months"] + list(forecast_months),
-        key="forecast_month"
+        "forecast_month"
     )
 
     forecast_programmes = sorted(
@@ -1573,10 +1604,11 @@ elif page == "Performance Forecast":
         .unique()
     )
 
-    forecast_programme = fc2.selectbox(
+    forecast_programme = persistent_selectbox(
+        fc2,
         "Programme",
         ["All Programmes"] + list(forecast_programmes),
-        key="forecast_programme"
+        "forecast_programme"
     )
 
     forecast_lgas = sorted(
@@ -1585,13 +1617,15 @@ elif page == "Performance Forecast":
         .unique()
     )
 
-    forecast_lga = fc3.selectbox(
+    forecast_lga = persistent_selectbox(
+        fc3,
         "LGA",
         ["All LGAs"] + list(forecast_lgas),
-        key="forecast_lga"
+        "forecast_lga"
     )
 
-    forecast_status_filter = fc4.selectbox(
+    forecast_status_filter = persistent_selectbox(
+        fc4,
         "Forecast Status",
         [
             "All Statuses",
@@ -1599,7 +1633,7 @@ elif page == "Performance Forecast":
             "Watch",
             "On Track"
         ],
-        key="forecast_status_filter"
+        "forecast_status_filter"
     )
 
     filtered_forecast = forecast_data.copy()
@@ -2413,10 +2447,11 @@ elif page == "Risk Intelligence":
         reverse=True
     )
 
-    selected_risk_month = rc1.selectbox(
+    selected_risk_month = persistent_selectbox(
+        rc1,
         "Reporting Month",
         ["All Months"] + list(risk_months),
-        key="risk_month"
+        "risk_month"
     )
 
     risk_programmes = sorted(
@@ -2425,10 +2460,11 @@ elif page == "Risk Intelligence":
         .unique()
     )
 
-    selected_risk_programme = rc2.selectbox(
+    selected_risk_programme = persistent_selectbox(
+        rc2,
         "Programme",
         ["All Programmes"] + list(risk_programmes),
-        key="risk_programme"
+        "risk_programme"
     )
 
     risk_lgas = sorted(
@@ -2437,13 +2473,15 @@ elif page == "Risk Intelligence":
         .unique()
     )
 
-    selected_risk_lga = rc3.selectbox(
+    selected_risk_lga = persistent_selectbox(
+        rc3,
         "LGA",
         ["All LGAs"] + list(risk_lgas),
-        key="risk_lga"
+        "risk_lga"
     )
 
-    selected_risk_level = rc4.selectbox(
+    selected_risk_level = persistent_selectbox(
+        rc4,
         "Predicted Risk",
         [
             "All Risk Levels",
@@ -2451,7 +2489,7 @@ elif page == "Risk Intelligence":
             "Medium",
             "Low"
         ],
-        key="risk_level"
+        "risk_level"
     )
 
     filtered_risk = risk_data.copy()
@@ -3269,10 +3307,11 @@ elif page == "Anomaly Detection":
         reverse=True
     )
 
-    selected_anomaly_month = ac1.selectbox(
+    selected_anomaly_month = persistent_selectbox(
+        ac1,
         "Reporting Month",
         ["All Months"] + list(anomaly_months),
-        key="anomaly_month"
+        "anomaly_month"
     )
 
     anomaly_programmes = sorted(
@@ -3281,10 +3320,11 @@ elif page == "Anomaly Detection":
         .unique()
     )
 
-    selected_anomaly_programme = ac2.selectbox(
+    selected_anomaly_programme = persistent_selectbox(
+        ac2,
         "Programme",
         ["All Programmes"] + list(anomaly_programmes),
-        key="anomaly_programme"
+        "anomaly_programme"
     )
 
     anomaly_lgas = sorted(
@@ -3293,20 +3333,22 @@ elif page == "Anomaly Detection":
         .unique()
     )
 
-    selected_anomaly_lga = ac3.selectbox(
+    selected_anomaly_lga = persistent_selectbox(
+        ac3,
         "LGA",
         ["All LGAs"] + list(anomaly_lgas),
-        key="anomaly_lga"
+        "anomaly_lga"
     )
 
-    selected_anomaly_status = ac4.selectbox(
+    selected_anomaly_status = persistent_selectbox(
+        ac4,
         "Detection Status",
         [
             "All Records",
             "Alert",
             "Normal"
         ],
-        key="anomaly_status"
+        "anomaly_status"
     )
 
     filtered_anomaly = anomaly_data.copy()
@@ -4169,22 +4211,23 @@ elif page == "Explainable AI":
         reverse=True
     )
 
-    selected_explain_month = ec1.selectbox(
+    selected_explain_month = persistent_selectbox(
+        ec1,
         "Reporting Month",
         ["All Months"] + list(explain_months),
-        key="explain_month"
+        "explain_month"
     )
-
     explain_programmes = sorted(
         explain_data["programme_name"]
         .dropna()
         .unique()
     )
 
-    selected_explain_programme = ec2.selectbox(
+    selected_explain_programme = persistent_selectbox(
+        ec2,
         "Programme",
         ["All Programmes"] + list(explain_programmes),
-        key="explain_programme"
+        "explain_programme"
     )
 
     explain_lgas = sorted(
@@ -4193,13 +4236,15 @@ elif page == "Explainable AI":
         .unique()
     )
 
-    selected_explain_lga = ec3.selectbox(
+    selected_explain_lga = persistent_selectbox(
+        ec3,
         "LGA",
         ["All LGAs"] + list(explain_lgas),
-        key="explain_lga"
+        "explain_lga"
     )
 
-    selected_explain_risk = ec4.selectbox(
+    selected_explain_risk = persistent_selectbox(
+        ec4,
         "Predicted Risk",
         [
             "All Risk Levels",
@@ -4207,7 +4252,7 @@ elif page == "Explainable AI":
             "Medium",
             "Low"
         ],
-        key="explain_risk"
+        "explain_risk"
     )
 
     filtered_explain = explain_data.copy()
@@ -4955,10 +5000,11 @@ elif page == "Geographic Intelligence":
         reverse=True
     )
 
-    selected_geo_month = gc1.selectbox(
+    selected_geo_month = persistent_selectbox(
+        gc1,
         "Reporting Month",
         ["All Months"] + list(geo_months),
-        key="geo_month"
+        "geo_month"
     )
 
     geo_programmes = sorted(
@@ -4967,10 +5013,11 @@ elif page == "Geographic Intelligence":
         .unique()
     )
 
-    selected_geo_programme = gc2.selectbox(
+    selected_geo_programme = persistent_selectbox(
+        gc2,
         "Programme",
         ["All Programmes"] + list(geo_programmes),
-        key="geo_programme"
+        "geo_programme"
     )
 
     geo_priorities = [
@@ -4980,10 +5027,11 @@ elif page == "Geographic Intelligence":
         "Low"
     ]
 
-    selected_geo_priority = gc3.selectbox(
+    selected_geo_priority = persistent_selectbox(
+        gc3,
         "Priority",
         geo_priorities,
-        key="geo_priority"
+        "geo_priority"
     )
 
 
